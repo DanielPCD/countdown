@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Tienes que escuchar esto</title>
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <style>
+    :root{
+      --bg1: #0b0f19;
+      --bg2: #111a2e;
+      --accent: #ffb703;
+      --text: #e9eef5;
+      --muted: #9aa4b2;
+      --ring: rgba(255,255,255,0.12);
+      --radius: 26px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 90% -10%, rgba(255,255,255,0.06), transparent 60%),
+        linear-gradient(180deg, #0d1322 0%, #0b0f19 60%, #0a0d17 100%);
+      min-height:100svh;
+      display:flex; align-items:center; justify-content:center;
+      padding: clamp(10px, 3vw, 24px);
+      padding-left: max(10px, env(safe-area-inset-left));
+      padding-right: max(10px, env(safe-area-inset-right));
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
+    .stage{
+      width:min(1100px, 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+      padding: clamp(14px, 2.6vw, 36px);
+      backdrop-filter: blur(6px);
+    }
+
+    header.top{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      align-items:center;
+      gap: clamp(10px, 2vw, 18px);
+      margin-bottom: clamp(10px, 2vw, 16px);
+    }
+    .title{ min-width:0 }
+
+    #title{ display:none; }
+
+    h1{
+      margin:0;
+      font-weight: 900;
+      letter-spacing: .2px;
+      font-size: clamp(22px, 3.6vw, 54px);
+      line-height:1.1;
+      white-space: normal;
+      word-break: break-word;
+    }
+    .sub{
+      margin-top: 6px;
+      color:var(--muted);
+      font-size: clamp(12px, 1.8vw, 16px);
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
+    .dot{ width:6px; height:6px; border-radius:99px; background:var(--ring); }
+
+    .right{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;
+      min-width: 0;
+    }
+    .actions{ display:flex; gap:8px; flex-wrap:wrap; justify-self:end }
+    .btn{
+      appearance:none; border:1px solid rgba(255,255,255,0.08);
+      background: #101831; color:var(--text);
+      padding: 10px 14px; border-radius:12px;
+      cursor:pointer; font-weight:700; letter-spacing:.2px;
+      touch-action: manipulation;
+    }
+    .btn:hover{ background:#0f1a39 }
+
+    .counter{
+      margin-top: clamp(12px, 2vw, 18px);
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: clamp(8px, 2vw, 16px);
+    }
+    .slot{
+      background: var(--bg2);
+      border:1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: clamp(14px, 2.6vw, 22px);
+      position:relative;
+      overflow:hidden;
+    }
+    .slot:before{
+      content:""; position:absolute; inset:auto -20% -60% -20%;
+      height:130%; background: radial-gradient(60% 40% at 50% 100%, rgba(255,255,255,0.06), transparent 80%);
+      pointer-events:none;
+    }
+    .num{
+      font-variant-numeric: tabular-nums;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      font-size: clamp(34px, 12vw, 120px);
+      line-height: .95;
+      text-shadow: 0 6px 24px rgba(0,0,0,0.35);
+    }
+    .num.is-seconds{ transition: transform .2s ease, text-shadow .2s ease; }
+    .num.tick{ transform: scale(1.028); text-shadow: 0 12px 28px rgba(0,0,0,0.45) }
+    .lab{
+      margin-top: clamp(6px, 1vw, 10px);
+      font-size: clamp(11px, 1.8vw, 15px);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .bar{
+      margin-top: clamp(10px, 2vw, 16px);
+      height: 8px; background: #0f1630; border-radius:999px; overflow:hidden;
+      border:1px solid rgba(255,255,255,0.06);
+    }
+    .bar > i{
+      display:block; height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--accent), #ffd48a);
+    }
+
+    .foot{
+      margin-top: clamp(12px, 2vw, 16px);
+      color:var(--muted); font-size: clamp(12px, 1.6vw, 14px);
+      display:flex; justify-content:space-between; gap:8px; align-items:center; flex-wrap:wrap;
+    }
+    .foot .note{ opacity:.9 }
+    .foot .org{ opacity:.95; font-weight:700 }
+
+    @media (max-width: 700px){
+      :root{ --radius: 22px; }
+      .stage{ padding: 14px; }
+      header.top{ grid-template-columns: 1fr; }
+      .right{ justify-content: flex-start; }
+      .actions .btn{ padding: 9px 12px; }
+      .counter{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .num{ font-size: clamp(36px, 15vw, 86px); }
+    }
+    @media (max-width: 420px){
+      .actions{ display:none } 
+      .sub{ font-size: 0.92rem; }
+    }
+
+    .kiosk .actions, .kiosk .note { display:none !important }
+    .kiosk { cursor: none }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <header class="top">
+      <div class="title">
+        <h1 id="title">Tienes que escuchar esto</h1>
+        <div class="sub">
+          <span id="when">—</span>
+          <span class="dot"></span>
+          <span id="place">Universidad Panamericana</span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="actions">
+          <button class="btn" id="fullscreenBtn">Pantalla completa</button>
+          <button class="btn" id="shareBtn">Copiar URL</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="counter" aria-live="polite" aria-atomic="true">
+      <div class="slot"><div class="num" id="d">--</div><div class="lab">Días</div></div>
+      <div class="slot"><div class="num" id="h">--</div><div class="lab">Horas</div></div>
+      <div class="slot"><div class="num" id="m">--</div><div class="lab">Minutos</div></div>
+      <div class="slot"><div class="num is-seconds" id="s">--</div><div class="lab">Segundos</div></div>
+    </section>
+
+    <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+
+    <footer class="foot">
+      <div class="note" id="note"></div>
+      <div class="org" id="org"></div>
+    </footer>
+  </div>
+
+  <script>
+    const $ = (id)=>document.getElementById(id);
+    function fmtDate(d, tz){
+      try{
+        return new Intl.DateTimeFormat('es-MX', {
+          weekday:'long', year:'numeric', month:'long', day:'numeric',
+          hour:'2-digit', minute:'2-digit', timeZone: tz || 'America/Mexico_City'
+        }).format(d);
+      }catch(e){ return d.toLocaleString(); }
+    }
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+    const q = new URLSearchParams(location.search);
+    const place = q.get('place') || q.get('loc') || 'Universidad Panamericana';
+    const dateStr = q.get('date'); 
+    const tz = q.get('tz') || 'America/Mexico_City';
+    const kiosk = q.get('kiosk') === '1';
+    const compact = q.get('compact') === '1';
+    const bg1 = q.get('bg1'); if(bg1) document.documentElement.style.setProperty('--bg1', bg1);
+    const bg2 = q.get('bg2'); if(bg2) document.documentElement.style.setProperty('--bg2', bg2);
+    const accent = q.get('accent'); if(accent) document.documentElement.style.setProperty('--accent', accent);
+
+    // Sin hashtag por defecto; vacío si no se pasa ?org=
+    const org = q.get('org') || '';
+
+    $('place').textContent = place;
+    $('org').textContent = org;
+    if (!org) $('org').style.display = 'none';
+
+    if(kiosk){ $('stage').classList.add('kiosk'); }
+    if(compact){ document.body.classList.add('compact'); }
+
+    let target;
+    let note = '';
+
+    if(dateStr){
+      if(/^\d{4}-\d{2}-\d{2}$/.test(dateStr)){
+        const [Y,M,D] = dateStr.split('-').map(Number);
+        target = new Date(Date.UTC(Y, M-1, D, 6, 0, 0)); 
+        note = 'Interpretado como 00:00 (CDMX). Sugerencia: usa hora y zona, ej. 2025-10-22T13:00:00-06:00';
+      }else{
+        const t = Date.parse(dateStr);
+        if(!isNaN(t)) target = new Date(t);
+      }
+    }
+
+    if(!target){
+      target = new Date('2025-10-22T13:00:00-06:00'); 
+    }
+
+    $('when').textContent = fmtDate(target, tz);
+
+    const dEl = $('d'), hEl = $('h'), mEl = $('m'), sEl = $('s'), bar = $('bar');
+
+    function render(nowMs){
+      const ms = Math.max(0, target.getTime() - nowMs);
+      const days = Math.floor(ms / (24*3600e3));
+      const hours = Math.floor((ms % (24*3600e3)) / 3600e3);
+      const mins  = Math.floor((ms % 3600e3) / 60e3);
+      const secs  = Math.floor((ms % 60e3) / 1e3);
+
+      dEl.textContent = pad(days);
+      hEl.textContent = pad(hours);
+      mEl.textContent = pad(mins);
+      sEl.textContent = pad(secs);
+      sEl.classList.remove('tick'); void sEl.offsetWidth; sEl.classList.add('tick');
+
+      document.title = ms > 0 ? `${days}d ${pad(hours)}h ${pad(mins)}m — Tienes que escuchar esto`
+                              : `¡Es hoy! — Tienes que escuchar esto`;
+
+      const secProgress = (secs === 0 && ms > 0) ? 0 : (secs/60);
+      bar.style.width = clamp(secProgress*100, 0, 100) + '%';
+
+      if(ms <= 0){
+        document.querySelector('.counter').outerHTML =
+          '<div class="slot" style="grid-column:1/-1"><div class="num">¡Es hoy!</div><div class="lab">¡Éxitos!</div></div>';
+        bar.style.width = '100%';
+      }
+    }
+
+    render(Date.now());
+
+    (function initTicks(){
+      try{
+        const workerJs = `
+          let timer = null;
+          self.onmessage = (e)=>{
+            if(e.data === 'start'){
+              clearInterval(timer);
+              timer = setInterval(()=> self.postMessage(Date.now()), 1000);
+            }
+          };
+        `;
+        const w = new Worker(URL.createObjectURL(new Blob([workerJs], {type:'text/javascript'})));
+        w.onmessage = (e)=> render(e.data);
+        w.postMessage('start');
+      }catch(e){
+        setInterval(()=> render(Date.now()), 1000);
+      }
+    })();
+
+    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) render(Date.now()); }, { passive:true });
+
+    const fsBtn = $('fullscreenBtn');
+    const shareBtn = $('shareBtn');
+    if(fsBtn){
+      fsBtn.addEventListener('click', ()=>{
+        if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(()=>{}); }
+        else{ document.exitFullscreen().catch(()=>{}); }
+      });
+    }
+    if(shareBtn){
+      shareBtn.addEventListener('click', async ()=>{
+        try{
+          await navigator.clipboard.writeText(location.href);
+          const txt = shareBtn.textContent;
+          shareBtn.textContent = '¡URL copiada!'; setTimeout(()=> shareBtn.textContent = txt, 1500);
+        }catch(e){}
+      });
+    }
+  </script>
+</body>
+</html>
